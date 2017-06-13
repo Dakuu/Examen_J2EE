@@ -68,6 +68,46 @@ public class TestUnitaireSurStock
 				);
 	}
 
+	@Test
+	public void getAListOfDenree() throws Exception
+	{
+		
+        final long taille = 4;
+        Collection<Denree> col = stockBDD.getListeDenree( 1, taille );
+        assertEquals(
+                "La taille ne correspond pas : ",
+                taille, col.size()
+                );
+
+        Iterator<Denree> it = col.iterator();
+        final int[] tabId = { 1, 2, 3, 4 };
+        final String[] tabNom = { "coca", "oasis", "Sandwich", "Magnum" };
+        final String[] tabCategorie = { "boisson", "boisson", "encas", "glace" };
+        final int[] tabQuantite = {20, 20, 20, 20};
+
+        int i = 0;
+        while ( it.hasNext() )
+        {
+            Denree d = it.next();
+            assertEquals(
+                    "Erreur pour l'identifiant : ",
+                    tabId[i], d.getId()
+                    );
+            assertEquals(
+                    "Erreur pour le nom : ",
+                    tabNom[i], d.getNom()
+                    );
+            assertEquals(
+                    "Erreur pour la catégorie : ",
+                    tabCategorie[i], d.getCategorie()
+                    );
+            assertEquals(
+                    "Erreur pour la qantité : ",
+                    tabQuantite[i], d.getQuantite()
+                    );
+            i++;
+}
+	}
 	private static void insertDenree(long id, String nom, String categorie, int quantite) throws Exception
 	{
 		String requete = "INSERT INTO Denree ( id, nom, categorie, quantite ) VALUES (?,?,?,?)";
