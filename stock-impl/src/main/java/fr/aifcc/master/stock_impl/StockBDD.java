@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class StockBDD implements StockInterface{
 
 	private final Connection connection;
-	private final String table = "Stock";
+	private final String TABLE_NAME = "Stock";
 	private final String id = "id";
 	private final String nom = "nom";
 	private final String categorie = "categorie";
@@ -27,12 +27,78 @@ public class StockBDD implements StockInterface{
 
     public Collection<Denree> getListeDenree( long position, long nombreitems )throws StockException
     {
-		return null;
+		ResultSet res;
+		Collection<Denree> denrees = new ArrayList<Denree>();
+
+		try
+		{
+			String requete = "SELECT * FROM "+ TABLE_NAME + " WHERE id >=? fetch next ? rows only";
+			PreparedStatement statement = connection.prepareStatement(requete);
+			statement.setLong(1, position);
+			statement.setLong(2, nombreitems);
+			res = statement.executeQuery();
+
+			if (!res.next())
+			{
+				res.close();
+				throw new StockException("Probleme SQL, la base est vide !");
+			}
+			else
+			{
+				do 
+				{
+					Denree denree = new Denree();
+					denree.setId(res.getLong(1));
+					denree.setNom(res.getString(2));
+					denree.setCategorie(res.getString(3));
+					denree.setQuantite(res.getInt(4));
+					denrees.add(denree);
+				}
+				while(res.next());
+				res.close();
+			}	
+		}
+		catch(SQLException sqlDefault)
+		{
+			throw new StockException("Probleme sql du getListeDenree !!!");
+		}
+		return denrees;
 	}
 
     public Denree getDenree( long id ) throws StockException
     {
-		return null;
+		ResultSet res;
+		try
+		{
+			String requete = "SELECT * FROM " + TABLE_NAME + " WHERE ID=?";
+			PreparedStatement statement = connection.prepareStatement(requete);
+			statement.setLong(1, id);
+			res = statement.executeQuery();
+			int taille = res.getFetchSize();
+			if (!res.next())
+			{
+				res.close();
+				throw new StockException("Probleme SQL, la base est vide !");
+			}
+			else if (taille != 0)
+			{
+				throw new StockException("Probleme SQL, taille à 0 !");
+			}
+			else
+			{
+				Denree denree = new Denree();
+				denree.setId(res.getLong(1));
+				denree.setNom(res.getString(2));
+				denree.setCategorie(res.getString(3));
+				denree.setQuantite(res.getInt(4));
+				res.close();
+				return denree;
+			}	
+		}
+		catch(SQLException sqlDefault)
+		{
+			throw new StockException("Probleme sql !!! recupe une personne");
+		}
 	}
 
     public void mAjDenree( Denree denree ) throws StockException
@@ -45,41 +111,6 @@ public class StockBDD implements StockInterface{
     {
 		return null;
 	}
-
-
-	/*@Override
-	public synchronized Person getPerson(long id) throws DirectoryException{
-		ResultSet res;
-		try{
-			String requete = "select * from "+table +" where id = ?";
-			PreparedStatement p = this.connection.prepareStatement(requete);
-			p.setLong(1,id);
-			
-			res = p.executeQuery();
-			int taille = res.getFetchSize();
-			if(!res.next())
-			{
-				res.close();
-				throw new DirectoryException("Plus de données dans la table");
-			}
-			if(taille != 0)
-			{
-				res.close();
-				throw new DirectoryException("Resultat attendu 0, obtenu : "+taille);
-			}
-			
-			Person personne = new Person();
-			personne.setId(res.getLong(1));
-			personne.setFirstName(res.getString(2));
-			personne.setLastName(res.getString(3));
-			
-			res.close();
-			return personne;
-			
-		}catch(SQLException e){
-			throw new DirectoryException(e);
-		}
-	}*/
 
 	@Override
 	public synchronized void dispose() throws StockException{
