@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html>
+
+<html lang='fr'
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h='http://java.sun.com/jsf/html'
+    >
+
+<h:head>
+    <title>
+        Page Bénévole
+    </title>
+</h:head>
+<h:body>
+<f:view>
+
+    <h1>Annuaire des denrées</h1>
+
+    <h:dataTable value="#{pageBenevoleBean.denrees}" var="denree">
+
+        <h:column>
+            <f:facet name="header">ID</f:facet>
+            <h:outputText value="#{denree.id}" />
+        </h:column>
+        
+        <h:column>
+            <f:facet name="header">Nom</f:facet>
+            <h:outputText value="#{denree.nom}" />
+        </h:column>
+        
+        <h:column>
+            <f:facet name="header">Catégorie</f:facet>
+            <h:outputText value="#{denree.categorie}" />
+        </h:column>
+        
+        <h:column>
+            <f:facet name="header">Quantité</f:facet>
+            <h:outputText value="#{denree.quantite}" />
+        </h:column>
+        <h:column>
+            <h:form>
+				<h:commandButton value="Enlever une unité" action="#{pageBenevole.envelerElement(denree.id)}" />
+            </h:form>
+        </h:column>
+    </h:dataTable>
+
+
+
+</f:view>
+</h:body>
+</html>
