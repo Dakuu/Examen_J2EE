@@ -12,7 +12,7 @@ public class Denree extends Item {
 		this.nom = nom;
 	}
 	
-	public String getCategorie){
+	public String getCategorie(){
 		return this.categorie;
 	}
 	public void setCategorie(String categorie){
