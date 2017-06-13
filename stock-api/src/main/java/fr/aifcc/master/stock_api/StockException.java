@@ -4,13 +4,13 @@ public class StockException extends Exception
 {
 
     /**
-     * Crée une nouvelle instance de ExceptionDivisionParZero
+     * Crée une nouvelle instance de StockException
      * */
     public StockException()
     {}
 
     /**
-     * Crée une nouvelle instance de ExceptionDivisionParZero
+     * Crée une nouvelle instance de StockException
      * @param message
      * Le message détaillant exception
      * */
@@ -20,7 +20,7 @@ public class StockException extends Exception
     }
 
     /**
-     * Crée une nouvelle instance de ExceptionDivisionParZero
+     * Crée une nouvelle instance de StockException
      * @param cause
      * L'exception à l'origine de cette exception
      * */
@@ -30,7 +30,7 @@ public class StockException extends Exception
     }
 
     /**
-     * Crée une nouvelle instance de ExceptionDivisionParZero
+     * Crée une nouvelle instance de StockException
      * @param message
      * Le message détaillant exception
      * @param cause
