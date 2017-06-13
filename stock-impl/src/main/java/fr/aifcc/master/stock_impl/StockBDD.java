@@ -4,6 +4,7 @@ import fr.aifcc.master.stock_api.*;
 import java.sql.*;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class StockBDD implements StockInterface{
 
@@ -34,6 +35,7 @@ public class StockBDD implements StockInterface{
 		try
 		{
 			String requete = "SELECT * FROM "+ TABLE_NAME + " WHERE id >=? fetch next ? rows only";
+			// Une requête doit TOUJOURS être préparé pour éviter les injections SQL.
 			PreparedStatement statement = connection.prepareStatement(requete);
 			statement.setLong(1, position);
 			statement.setLong(2, nombreitems);
@@ -72,6 +74,7 @@ public class StockBDD implements StockInterface{
 		try
 		{
 			String requete = "SELECT * FROM " + TABLE_NAME + " WHERE ID=?";
+			// Une requête doit TOUJOURS être préparé pour éviter les injections SQL.v
 			PreparedStatement statement = connection.prepareStatement(requete);
 			statement.setLong(1, id);
 			res = statement.executeQuery();
@@ -104,14 +107,66 @@ public class StockBDD implements StockInterface{
 
 
     public void mAjDenree( Denree denree ) throws StockException
-    {}
+    {
+		try{
+			String requete = "UPDATE " + TABLE_NAME + " SET nom = ?, categorie = ?, quantite = ? WHERE id = ? ";
+			// Une requête doit TOUJOURS être préparé pour éviter les injections SQL.
+			PreparedStatement statement = connection.prepareStatement(requete);
+			statement.setString(1,denree.getNom());
+			statement.setString(2,denree.getCategorie());
+			statement.setInt(3,denree.getQuantite());
+			statement.setLong(4,denree.getId());
+			statement.executeUpdate();
+			statement.close();
+		}catch(SQLException e){
+			throw new StockException(e);
+		}
+	}
 
     public void ajouterDenree( Denree item ) throws StockException
-    {}
+    {
+		try{
+			
+			String requete = "INSERT INTO " + TABLE_NAME + " ( id, nom, categorie, quantite ) VALUES (?,?,?,?)";
+			// Une requête doit TOUJOURS être préparé pour éviter les injections SQL.
+			PreparedStatement statement = connection.prepareStatement(requete);
+			statement.setLong(1,item.getId());
+			statement.setString(2,item.getNom());
+			statement.setString(3,item.getCategorie());
+			statement.setInt(4,item.getQuantite());
+			statement.executeUpdate();
+			statement.close();
+		}catch(SQLException e){
+			throw new StockException(e);
+		}
+	}
 
     public Collection<Denree> getDenreeRecherche( String critere )throws StockException
     {
-		return null;
+		ResultSet res;
+		try{
+			
+			String requete = "SELECT * FROM " + TABLE_NAME + " WHERE NOM LIKE ?";
+		 
+			// Une requête doit TOUJOURS être préparé pour éviter les injections SQL.
+			PreparedStatement statement = connection.prepareStatement(requete);
+			statement.setString(1, critere);
+			res = statement.executeQuery();
+
+            Collection<Denree> listDenree = new LinkedList<>();
+
+            while ( res.next() )
+            {
+                listDenree.add( getDenree( res.getLong( 1 ) ) );
+            }
+            res.close();
+
+			return listDenree;
+			
+		}catch(SQLException e){
+			throw new StockException(e);
+		}
+		
 	}
 
 	@Override
