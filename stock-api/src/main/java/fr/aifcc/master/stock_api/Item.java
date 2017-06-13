@@ -4,6 +4,7 @@ public abstract class Item
 {
 	private long id;
 	
+	//Accesseur de id
 	public long getId()
 	{
 		return this.id;

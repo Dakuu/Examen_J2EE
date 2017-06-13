@@ -1,10 +1,10 @@
-/*package fr.aifcc.master.directory_impl;
+package fr.aifcc.master.stock_impl;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.After;
 import org.junit.AfterClass;
-import fr.aifcc.master.directory_api.Person;
+import fr.aifcc.master.stock_api.Denree;
 import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Iterator;
@@ -12,12 +12,13 @@ import java.util.ArrayList;
 import java.sql.*;
 
 
-public class TestDataBaseDirectory
+public class TestUnitaireSurStock
 {
 	private static Connection connection;
 	private static String DRIVER = "org.apache.derby.jdbc.ClientDriver";
-	private static String URL = "jdbc:derby://localhost:1527/NomBDD";
-	private DataBaseDirectory dataBaseDirectory;
+	private static String URL = "jdbc:derby://localhost:1527/TestStock";
+	
+	private StockBDD stockBDD;
 
 	@BeforeClass
 	public static void onlyOnce() throws Exception
@@ -25,31 +26,57 @@ public class TestDataBaseDirectory
 		Class.forName(DRIVER);
 		connection = DriverManager.getConnection(URL);
 		clearTable();
-		insertPerson("TOTO", "toto");
-		insertPerson("TATA", "tata");
-		insertPerson("TUTU", "tutu");
+		insertDenree(1,"coca", "boisson", 20);
+		insertDenree(2,"oasis", "boisson", 20);
+		insertDenree(3,"Sandwich", "encas", 20);
+		insertDenree(4,"Magnum", "glace", 20);
 
 	}
 
 	@Before
 		public void setUp() throws Exception
 		{
-			dataBaseDirectory = new DataBaseDirectory(DRIVER,URL);
+			stockBDD = new StockBDD(DRIVER,URL);
 		}
 
 
 	@Test
-	public void getOnePerson() throws Exception
+	public void getOneDenree() throws Exception
 	{
-
-	}
 		
-	private static void insertPerson(String firstName, String lastName) throws Exception
+		final long id = 1;
+        final String nomAttendu = "coca";
+        final String categorieAttendu = "boisson";
+        final int quantiteAttendu = 20;
+        
+        Denree d = stockBDD.getDenree(id);
+        assertEquals(
+                "Erreur pour l'identifiant : ",
+                id, d.getId()
+                );
+        assertEquals(
+                "Erreur pour le nom : ",
+                nomAttendu, d.getNom()
+                );
+        assertEquals(
+                "Erreur pour la catégorie : ",
+                categorieAttendu, d.getCategorie()
+				);
+		assertEquals(
+                "Erreur pour la quantite : ",
+                quantiteAttendu, d.getQuantite()
+				);
+	}
+
+	private static void insertDenree(long id, String nom, String categorie, int quantite) throws Exception
 	{
-		String requete = "INSERT INTO PERSON (firstName,lastName) VALUES (?,?)";
+		String requete = "INSERT INTO Denree ( id, nom, categorie, quantite ) VALUES (?,?,?,?)";
+		 
 		PreparedStatement statement = connection.prepareStatement(requete);
-		statement.setString(1,firstName);
-		statement.setString(2,lastName);
+		statement.setLong(1,id);
+		statement.setString(2,nom);
+		statement.setString(3,categorie);
+		statement.setInt(4,quantite);
 		statement.executeUpdate();
 		statement.close();
 	}
@@ -57,7 +84,7 @@ public class TestDataBaseDirectory
 	@After
 	public void tearDown() throws Exception
 	{
-		dataBaseDirectory.dispose();
+		stockBDD.dispose();
 	}
 
 	@AfterClass
@@ -69,10 +96,10 @@ public class TestDataBaseDirectory
 
 	public static void clearTable() throws Exception
 	{
-		String requete = "DELETE FROM PERSON";
+		String requete = "DELETE FROM Denree";
 		PreparedStatement statement = connection.prepareStatement(requete);
 		statement.executeUpdate();
 		statement.close();
 	}
 
-}*/
+}

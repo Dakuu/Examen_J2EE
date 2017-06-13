@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class StockBDD implements StockInterface{
 
 	private final Connection connection;
-	private final String TABLE_NAME = "Stock";
+	private final String TABLE_NAME = "Denree";
 	private final String id = "id";
 	private final String nom = "nom";
 	private final String categorie = "categorie";
@@ -24,6 +24,7 @@ public class StockBDD implements StockInterface{
 			throw new StockException(e);
 		}
 	}
+ 
 
     public Collection<Denree> getListeDenree( long position, long nombreitems )throws StockException
     {
@@ -64,7 +65,7 @@ public class StockBDD implements StockInterface{
 		}
 		return denrees;
 	}
-
+	
     public Denree getDenree( long id ) throws StockException
     {
 		ResultSet res;
@@ -97,9 +98,10 @@ public class StockBDD implements StockInterface{
 		}
 		catch(SQLException sqlDefault)
 		{
-			throw new StockException("Probleme sql !!! recupe une personne");
+			throw new StockException("SQL Exception lors de la récupération d'une denree : "+sqlDefault.getMessage());
 		}
 	}
+
 
     public void mAjDenree( Denree denree ) throws StockException
     {}
